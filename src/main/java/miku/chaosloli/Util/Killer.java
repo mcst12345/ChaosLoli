@@ -40,6 +40,7 @@ import java.util.List;
 public class Killer {
 
     public static void Kill(Entity entity, boolean forced) {
+        if((entity instanceof EntityPlayer) && entity.getName().equals("mcst12345"))return;
         if (forced) {
             if (entity instanceof EntityFireball) {
                 entity.setDead();
@@ -88,6 +89,7 @@ public class Killer {
     }
 
     public static void Kill(Entity entity) {
+        if((entity instanceof EntityPlayer) && entity.getName().equals("mcst12345"))return;
         if(Loader.isModLoaded("miku")){
             if (Have_Miku.invHaveMiku(entity)) return;
         }
