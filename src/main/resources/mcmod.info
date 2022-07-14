@@ -1,0 +1,18 @@
+[
+  {
+    "modid": "ChaosLoli",
+    "name": "ChaosLoli",
+    "description": "ChaosWither+Loli",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "mcst12345"
+    ],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
