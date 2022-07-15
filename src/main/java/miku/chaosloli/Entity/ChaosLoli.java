@@ -15,6 +15,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.*;
@@ -31,6 +34,11 @@ import java.util.Collection;
 import java.util.Map;
 
 public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
+    private static final DataParameter<Integer> INVULNERABILITY_TIME;
+
+    static {
+        INVULNERABILITY_TIME = EntityDataManager.createKey(ChaosLoli.class, DataSerializers.VARINT);
+    }
     @Override
     public void setDispersal(boolean var1) {
     }
@@ -49,8 +57,17 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
 
     @Override
     protected void entityInit()
-    {}
+    {
+        this.dataManager.set(INVULNERABILITY_TIME, 0);
+    }
 
+    @Override
+    public void setInvulTime(int time){
+        this.dataManager.set(INVULNERABILITY_TIME,Integer.MAX_VALUE);
+    }
+
+    @Override
+    public int getInvulTime(){return Integer.MAX_VALUE;}
     @Override
     protected void initEntityAI()
     {
@@ -67,11 +84,11 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
         this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(Double.MAX_VALUE);
         this.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).setBaseValue(Double.MAX_VALUE);
         this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(Double.MAX_VALUE);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_SPEED).setBaseValue(Double.MAX_VALUE);
-        this.getEntityAttribute(SharedMonsterAttributes.FLYING_SPEED).setBaseValue(Double.MAX_VALUE);
+        //this.getEntityAttribute(SharedMonsterAttributes.ATTACK_SPEED).setBaseValue(Double.MAX_VALUE);
+        //this.getEntityAttribute(SharedMonsterAttributes.FLYING_SPEED).setBaseValue(Double.MAX_VALUE);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(Double.MAX_VALUE);
-        this.getEntityAttribute(SharedMonsterAttributes.LUCK).setBaseValue(Double.MAX_VALUE);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(Double.MAX_VALUE);
+        //this.getEntityAttribute(SharedMonsterAttributes.LUCK).setBaseValue(Double.MAX_VALUE);
+        //this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(Double.MAX_VALUE);
         this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(Double.MAX_VALUE);
     }
 
