@@ -2,7 +2,6 @@ package miku.chaosloli.Entity;
 
 import com.anotherstar.common.entity.IEntityLoli;
 import com.chaoswither.entity.EntityChaosWither;
-import com.sun.istack.internal.NotNull;
 import miku.chaosloli.Entity.AI.*;
 import miku.chaosloli.Util.Killer;
 import net.minecraft.block.state.IBlockState;
@@ -256,7 +255,6 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    @NotNull
     public String getName() {
         return "";
     }
@@ -278,7 +276,6 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    @NotNull
     public String toString() {
         return "";
     }
@@ -379,7 +376,6 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    @NotNull
     public EnumActionResult applyPlayerInteraction(@Nullable EntityPlayer player,@Nullable  Vec3d vec,@Nullable  EnumHand hand) {
         return EnumActionResult.FAIL;
     }
@@ -606,29 +602,24 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     protected void damageEntity(@Nullable DamageSource damageSrc, float damageAmount){}
 
     @Override
-    @NotNull
     public EnumCreatureAttribute getCreatureAttribute()
     {
         return EnumCreatureAttribute.UNDEFINED;
     }
 
     @Override
-    @NotNull
     public ItemStack getHeldItemMainhand(){return ItemStack.EMPTY;}
 
     @Override
-    @NotNull
     public ItemStack getHeldItemOffhand(){return ItemStack.EMPTY;}
 
     @Override
-    @NotNull
     public ItemStack getHeldItem(@Nullable EnumHand hand){return ItemStack.EMPTY;}
 
     @Override
     public boolean hasItemInSlot(@Nullable EntityEquipmentSlot p_190630_1_){return false;}
 
     @Override
-    @NotNull
     public ItemStack getItemStackFromSlot(@Nullable EntityEquipmentSlot slotIn){return ItemStack.EMPTY;}
 
     @Override
@@ -818,7 +809,6 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     public void setHomePosAndDistance(@Nullable BlockPos pos, int distance){}
 
     @Override
-    @NotNull
     public BlockPos getHomePosition(){return new BlockPos(Double.MAX_VALUE,Double.MAX_VALUE,Double.MAX_VALUE);}
 
     @Override
