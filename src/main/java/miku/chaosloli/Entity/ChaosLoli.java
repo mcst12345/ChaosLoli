@@ -61,7 +61,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    protected void applyEntityAttributes() {
+    public void applyEntityAttributes() {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(Double.MAX_VALUE);
         this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(Double.MAX_VALUE);
