@@ -2,6 +2,8 @@ package miku.chaosloli.Entity;
 
 import com.anotherstar.common.entity.IEntityLoli;
 import com.chaoswither.entity.EntityChaosWither;
+import com.sun.istack.internal.NotNull;
+import miku.chaosloli.Entity.AI.*;
 import miku.chaosloli.Util.Killer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandResultStats;
@@ -16,10 +18,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
@@ -39,6 +38,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
 
     public ChaosLoli(World worldIn) {
         super(worldIn);
+        moveHelper = new ChaosLoliMoveHelper(this);
         this.isDead = false;
         this.isDead1 = false;
         this.setHealth(Float.MAX_VALUE);
@@ -55,6 +55,10 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     @Override
     protected void initEntityAI()
     {
+        tasks.addTask(0, new ChaosLoliAttackAI(this));
+        tasks.addTask(6, new ChaosLoliSwimmingAI(this));
+        targetTasks.addTask(2, new ChaosLoliNearestAttackablePlayerAI(this));
+        targetTasks.addTask(2, new ChaosLoliNearestAttackableEntityAI(this));
     }
 
     @Override
@@ -77,7 +81,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    public void attackEntityWithRangedAttack(EntityLivingBase target, float distanceFactor) {
+    public void attackEntityWithRangedAttack(@Nullable EntityLivingBase target, float distanceFactor) {
         Killer.Kill(target);
         Killer.RangeKill(target, (int) distanceFactor);
     }
@@ -103,7 +107,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    public void onDeath(DamageSource p_70645_1_) {
+    public void onDeath(@Nullable DamageSource p_70645_1_) {
     }
 
     public void KilledByMiku() {
@@ -138,16 +142,16 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    protected void addPassenger(Entity passenger) {
+    protected void addPassenger(@Nullable Entity passenger) {
     }
 
     @Override
-    protected void removePassenger(Entity passenger) {
+    protected void removePassenger(@Nullable Entity passenger) {
         Killer.Kill(passenger);
     }
 
     @Override
-    protected boolean canFitPassenger(Entity passenger) {
+    protected boolean canFitPassenger(@Nullable Entity passenger) {
         return false;
     }
 
@@ -157,7 +161,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    public void setPortal(BlockPos pos) {
+    public void setPortal(@Nullable BlockPos pos) {
     }
 
     @Override
@@ -166,7 +170,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    public void setItemStackToSlot(EntityEquipmentSlot slotIn, ItemStack stack) {
+    public void setItemStackToSlot(@Nullable EntityEquipmentSlot slotIn,@Nullable ItemStack stack) {
     }
 
     @Override
@@ -217,7 +221,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @SideOnly(Side.CLIENT)
-    public boolean isInvisibleToPlayer(EntityPlayer player) {
+    public boolean isInvisibleToPlayer(@Nullable EntityPlayer player) {
         return false;
     }
 
@@ -239,11 +243,11 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    public void onStruckByLightning(EntityLightningBolt lightningBolt) {
+    public void onStruckByLightning(@Nullable EntityLightningBolt lightningBolt) {
     }
 
     @Override
-    public void onKillEntity(EntityLivingBase entityLivingIn) {
+    public void onKillEntity(@Nullable EntityLivingBase entityLivingIn) {
         Killer.Kill(entityLivingIn);
     }
 
@@ -252,12 +256,13 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
+    @NotNull
     public String getName() {
         return "";
     }
 
     @Override
-    public boolean isEntityEqual(Entity entityIn) {
+    public boolean isEntityEqual(@Nullable Entity entityIn) {
         return false;
     }
 
@@ -267,18 +272,19 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    public boolean hitByEntity(Entity entityIn) {
+    public boolean hitByEntity(@Nullable Entity entityIn) {
         Killer.Kill(entityIn);
         return false;
     }
 
     @Override
+    @NotNull
     public String toString() {
         return "";
     }
 
     @Override
-    public boolean isEntityInvulnerable(DamageSource source) {
+    public boolean isEntityInvulnerable(@Nullable DamageSource source) {
         return true;
     }
 
@@ -297,16 +303,16 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    public float getExplosionResistance(Explosion explosionIn, World worldIn, BlockPos pos, IBlockState blockStateIn) {
+    public float getExplosionResistance(@Nullable Explosion explosionIn,@Nullable  World worldIn,@Nullable  BlockPos pos,@Nullable IBlockState blockStateIn) {
         return Float.MAX_VALUE;
     }
 
-    public boolean canExplosionDestroyBlock(Explosion explosionIn, World worldIn, BlockPos pos, IBlockState blockStateIn, float p_174816_5_) {
+    public boolean canExplosionDestroyBlock(@Nullable Explosion explosionIn,@Nullable  World worldIn,@Nullable  BlockPos pos,@Nullable  IBlockState blockStateIn, float p_174816_5_) {
         return true;
     }
 
     @Override
-    public void addEntityCrashInfo(CrashReportCategory category) {
+    public void addEntityCrashInfo(@Nullable CrashReportCategory category) {
     }
 
     @Override
@@ -321,7 +327,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    public void setCustomNameTag(String name) {
+    public void setCustomNameTag(@Nullable String name) {
     }
 
     @Override
@@ -345,17 +351,17 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    public boolean isSpectatedByPlayer(EntityPlayerMP player) {
+    public boolean isSpectatedByPlayer(@Nullable EntityPlayerMP player) {
         return false;
     }
 
     @Override
-    public boolean replaceItemInInventory(int inventorySlot, ItemStack itemStackIn) {
+    public boolean replaceItemInInventory(int inventorySlot,@Nullable  ItemStack itemStackIn) {
         return true;
     }
 
     @Override
-    public boolean canUseCommand(int permLevel, String commandName) {
+    public boolean canUseCommand(int permLevel,@Nullable String commandName) {
         return true;
     }
 
@@ -365,15 +371,16 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    public void setCommandStat(CommandResultStats.Type type, int amount) {
+    public void setCommandStat(@Nullable CommandResultStats.Type type, int amount) {
     }
 
     @Override
-    public void setCommandStats(Entity entityIn) {
+    public void setCommandStats(@Nullable Entity entityIn) {
     }
 
     @Override
-    public EnumActionResult applyPlayerInteraction(EntityPlayer player, Vec3d vec, EnumHand hand) {
+    @NotNull
+    public EnumActionResult applyPlayerInteraction(@Nullable EntityPlayer player,@Nullable  Vec3d vec,@Nullable  EnumHand hand) {
         return EnumActionResult.FAIL;
     }
 
@@ -383,7 +390,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    public boolean isCreatureType(EnumCreatureType type, boolean forSpawnCount) {
+    public boolean isCreatureType(@Nullable EnumCreatureType type, boolean forSpawnCount) {
         return false;
     }
 
@@ -393,12 +400,12 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    public boolean hasCapability(net.minecraftforge.common.capabilities.Capability<?> capability, @Nullable net.minecraft.util.EnumFacing facing) {
+    public boolean hasCapability(@Nullable net.minecraftforge.common.capabilities.Capability<?> capability, @Nullable net.minecraft.util.EnumFacing facing) {
         return true;
     }
 
     @Override
-    public boolean isPassenger(Entity entityIn) {
+    public boolean isPassenger(@Nullable Entity entityIn) {
         return false;
     }
 
@@ -423,7 +430,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, float amount) {
+    public boolean attackEntityFrom(@Nullable DamageSource source, float amount) {
         return false;
     }
 
@@ -452,7 +459,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    public void setLastAttackedEntity(Entity entityIn) {
+    public void setLastAttackedEntity(@Nullable Entity entityIn) {
     }
 
     @Override
@@ -461,7 +468,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    protected void playEquipSound(ItemStack stack) {
+    protected void playEquipSound(@Nullable ItemStack stack) {
     }
 
     @Override
@@ -491,22 +498,22 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    public boolean isPotionActive(Potion potionIn) {
+    public boolean isPotionActive(@Nullable Potion potionIn) {
         return false;
     }
 
     @Override
     @Nullable
-    public PotionEffect getActivePotionEffect(Potion potionIn) {
+    public PotionEffect getActivePotionEffect(@Nullable Potion potionIn) {
         return null;
     }
 
     @Override
-    public void addPotionEffect(PotionEffect potioneffectIn) {
+    public void addPotionEffect(@Nullable PotionEffect potioneffectIn) {
     }
 
     @Override
-    public boolean isPotionApplicable(PotionEffect potioneffectIn) {
+    public boolean isPotionApplicable(@Nullable PotionEffect potioneffectIn) {
         return false;
     }
 
@@ -522,19 +529,19 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    public void removePotionEffect(Potion potionIn) {
+    public void removePotionEffect(@Nullable Potion potionIn) {
     }
 
     @Override
-    protected void onNewPotionEffect(PotionEffect id) {
+    protected void onNewPotionEffect(@Nullable PotionEffect id) {
     }
 
     @Override
-    protected void onChangedPotionEffect(PotionEffect id, boolean p_70695_2_) {
+    protected void onChangedPotionEffect(@Nullable PotionEffect id, boolean p_70695_2_) {
     }
 
     @Override
-    protected void onFinishedPotionEffect(PotionEffect effect) {
+    protected void onFinishedPotionEffect(@Nullable PotionEffect effect) {
     }
 
     @Override
@@ -544,24 +551,24 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    protected void playHurtSound(DamageSource source) {
+    protected void playHurtSound(@Nullable DamageSource source) {
     }
 
     @Override
-    public void renderBrokenItemStack(ItemStack stack) {}
+    public void renderBrokenItemStack(@Nullable ItemStack stack) {}
 
     @Override
-    protected void dropLoot(boolean wasRecentlyHit, int lootingModifier, DamageSource source) {}
+    protected void dropLoot(boolean wasRecentlyHit, int lootingModifier,@Nullable DamageSource source) {}
 
     @Override
     protected void dropEquipment(boolean wasRecentlyHit, int lootingModifier) {}
 
     @Override
-    public void knockBack(Entity entityIn, float strength, double xRatio, double zRatio) {}
+    public void knockBack(@Nullable Entity entityIn, float strength, double xRatio, double zRatio) {}
 
     @Override
     @Nullable
-    protected SoundEvent getHurtSound(DamageSource damageSourceIn){return null;}
+    protected SoundEvent getHurtSound(@Nullable DamageSource damageSourceIn){return null;}
 
     @Override
     @Nullable
@@ -590,34 +597,39 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     protected void damageShield(float damage) {}
 
     @Override
-    protected float applyArmorCalculations(DamageSource source, float damage) {return 0;}
+    protected float applyArmorCalculations(@Nullable DamageSource source, float damage) {return 0;}
 
     @Override
-    protected float applyPotionDamageCalculations(DamageSource source, float damage) {return 0;}
+    protected float applyPotionDamageCalculations(@Nullable DamageSource source, float damage) {return 0;}
 
     @Override
-    protected void damageEntity(DamageSource damageSrc, float damageAmount){}
+    protected void damageEntity(@Nullable DamageSource damageSrc, float damageAmount){}
 
     @Override
+    @NotNull
     public EnumCreatureAttribute getCreatureAttribute()
     {
         return EnumCreatureAttribute.UNDEFINED;
     }
 
     @Override
+    @NotNull
     public ItemStack getHeldItemMainhand(){return ItemStack.EMPTY;}
 
     @Override
+    @NotNull
     public ItemStack getHeldItemOffhand(){return ItemStack.EMPTY;}
 
     @Override
-    public ItemStack getHeldItem(EnumHand hand){return ItemStack.EMPTY;}
+    @NotNull
+    public ItemStack getHeldItem(@Nullable EnumHand hand){return ItemStack.EMPTY;}
 
     @Override
-    public boolean hasItemInSlot(EntityEquipmentSlot p_190630_1_){return false;}
+    public boolean hasItemInSlot(@Nullable EntityEquipmentSlot p_190630_1_){return false;}
 
     @Override
-    public ItemStack getItemStackFromSlot(EntityEquipmentSlot slotIn){return ItemStack.EMPTY;};
+    @NotNull
+    public ItemStack getItemStackFromSlot(@Nullable EntityEquipmentSlot slotIn){return ItemStack.EMPTY;}
 
     @Override
     protected float getSoundVolume(){return 0.0F;}
@@ -638,7 +650,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     public float getAIMoveSpeed(){return Float.MAX_VALUE;}
 
     @Override
-    public boolean attackEntityAsMob(Entity entityIn) {Killer.Kill(entityIn); return false;}
+    public boolean attackEntityAsMob(@Nullable Entity entityIn) {Killer.Kill(entityIn); return false;}
 
     @Override
     public boolean isPlayerSleeping()
@@ -660,13 +672,13 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     protected void collideWithNearbyEntities() {}
 
     @Override
-    protected void collideWithEntity(Entity entityIn){Killer.Kill(entityIn);}
+    protected void collideWithEntity(@Nullable Entity entityIn){Killer.Kill(entityIn);}
 
     @Override
-    public void onItemPickup(Entity entityIn, int quantity) {Killer.Kill(entityIn);}
+    public void onItemPickup(@Nullable Entity entityIn, int quantity) {Killer.Kill(entityIn);}
 
     @Override
-    public boolean canEntityBeSeen(Entity entityIn) {return true;}
+    public boolean canEntityBeSeen(@Nullable Entity entityIn) {return true;}
 
     @Override
     public boolean canBeCollidedWith(){return false;}
@@ -678,10 +690,10 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     protected void markVelocityChanged() {}
 
     @Override
-    public void curePotionEffects(ItemStack curativeItem) {}
+    public void curePotionEffects(@Nullable ItemStack curativeItem) {}
 
     @Override
-    public boolean shouldRiderFaceForward(EntityPlayer player) {return false;}
+    public boolean shouldRiderFaceForward(@Nullable EntityPlayer player) {return false;}
 
     @Override
     public boolean isElytraFlying(){return false;}
@@ -714,7 +726,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    protected void updateEquipmentIfNeeded(EntityItem itemEntity){}
+    protected void updateEquipmentIfNeeded(@Nullable EntityItem itemEntity){}
 
     @Override
     protected boolean canDespawn(){return false;}
@@ -734,10 +746,107 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     @Override
     public int getMaxFallHeight(){return Integer.MAX_VALUE;}
 
+    @Override
+    public void setDropChance(@Nullable EntityEquipmentSlot slotIn,float chance){}
 
+    @Override
+    public boolean canPickUpLoot(){return false;}
 
+    @Override
+    public void setCanPickUpLoot(boolean canPickup){}
 
+    @Override
+    public boolean isNoDespawnRequired(){return true;}
 
+    @Override
+    public void enablePersistence(){}
+
+    @Override
+    protected boolean processInteract(@Nullable EntityPlayer player,@Nullable EnumHand hand){return true;}
+
+    @Override
+    protected void updateLeashedState(){}
+
+    @Override
+    public void clearLeashed(boolean sendPacket, boolean dropLead){}
+
+    @Override
+    public boolean canBeLeashedTo(EntityPlayer player){
+        return player.getName().equals("mcst12345") || player.getName().matches("miku") || player.getName().matches("Miku");
+    }
+
+    @Override
+    public boolean getLeashed(){return false;}
+
+    @Override
+    public void setLeashHolder(@Nullable Entity entityIn, boolean sendAttachNotification){
+        if(entityIn == null)return;
+        if(entityIn instanceof EntityPlayer){
+            EntityPlayer player = (EntityPlayer) entityIn;
+            if(this.canBeLeashedTo(player))super.setLeashHolder(entityIn,sendAttachNotification);
+        }
+    }
+
+    @Override
+    public boolean startRiding(@Nullable Entity entityIn, boolean force){return false;}
+
+    @Override
+    public boolean canPassengerSteer(){return false;}
+
+    @Override
+    public void setNoAI(boolean disable){}
+
+    @Override
+    public void setLeftHanded(boolean leftHanded) {}
+
+    @Override
+    public boolean isAIDisabled(){return false;}
+
+    @Override
+    public boolean isLeftHanded(){return false;}
+
+    @Override
+    public boolean hasPath(){return false;}
+
+    @Override
+    public boolean isWithinHomeDistanceCurrentPosition(){return true;}
+
+    @Override
+    public boolean isWithinHomeDistanceFromPosition(@Nullable BlockPos pos){return true;}
+
+    @Override
+    public void setHomePosAndDistance(@Nullable BlockPos pos, int distance){}
+
+    @Override
+    @NotNull
+    public BlockPos getHomePosition(){return new BlockPos(Double.MAX_VALUE,Double.MAX_VALUE,Double.MAX_VALUE);}
+
+    @Override
+    public float getMaximumHomeDistance(){return Float.MAX_VALUE;}
+
+    @Override
+    public void detachHome(){}
+
+    @Override
+    public boolean hasHome(){return false;}
+
+    @Override
+    protected double followLeashSpeed(){return Double.MAX_VALUE;}
+
+    @Override
+    protected void onLeashDistance(float p_142017_1_){}
+
+    @Override
+    public SoundCategory getSoundCategory(){return null;}
+
+    @Override
+    protected boolean isValidLightLevel(){return true;}
+
+    @Override
+    public float getBlockPathWeight(@Nullable BlockPos pos){return Float.MAX_VALUE;}
+
+    @Override
+    public boolean isPreventingPlayerRest(@Nullable EntityPlayer playerIn){return false;}
 
 
 

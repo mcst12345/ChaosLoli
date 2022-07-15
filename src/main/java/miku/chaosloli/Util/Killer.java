@@ -34,12 +34,14 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Killer {
 
-    public static void Kill(Entity entity, boolean forced) {
+    public static void Kill(@Nullable Entity entity, boolean forced) {
+        if(entity == null)return;
         if((entity instanceof EntityPlayer) && entity.getName().equals("mcst12345"))return;
         if (forced) {
             if (entity instanceof EntityFireball) {
@@ -88,7 +90,8 @@ public class Killer {
         }
     }
 
-    public static void Kill(Entity entity) {
+    public static void Kill(@Nullable Entity entity) {
+        if(entity == null)return;
         if((entity instanceof EntityPlayer) && entity.getName().equals("mcst12345"))return;
         if(Loader.isModLoaded("miku")){
             if (Have_Miku.invHaveMiku(entity)) return;
@@ -197,7 +200,7 @@ public class Killer {
             entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.0);
             entity.hurtResistantTime = 0;
             entity.velocityChanged = true;
-            entity.addVelocity((double) (-MathHelper.sin(entity.rotationYaw * 3.1415927f / 180.0f) * 1.0f * 0.5f), 0.1, (double) (MathHelper.cos(entity.rotationYaw * 3.1415927f / 180.0f) * 1.0f * 0.5f));
+            entity.addVelocity(-MathHelper.sin(entity.rotationYaw * 3.1415927f / 180.0f) * 1.0f * 0.5f, 0.1, MathHelper.cos(entity.rotationYaw * 3.1415927f / 180.0f) * 1.0f * 0.5f);
             //entity.recentlyHit = 60;
 
             if (!entity.getHeldItemMainhand().isEmpty()) {
@@ -274,7 +277,7 @@ public class Killer {
         Minecraft.getMinecraft().entityRenderer.stopUseShader();
     }
 
-    public static void RangeKill(final Entity entity, int range) {
+    public static void RangeKill(Entity entity, int range) {
         World world = entity.getEntityWorld();
         List<Entity> list = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(entity.posX - range, entity.posY - range, entity.posZ - range, entity.posX + range, entity.posY + range, entity.posZ + range));
         list.remove(entity);

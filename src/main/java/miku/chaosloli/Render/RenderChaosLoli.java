@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
 
 public class RenderChaosLoli extends RenderLiving<ChaosLoli> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("miku", "textures/entities/miku.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation("chaoswither", "textures/entity/chaoswither.png");
 
     private final ModelLoli loli = new ModelLoli();
     public RenderChaosLoli(RenderManager rendermanagerIn, ModelBase modelbaseIn, float shadowsizeIn) {
