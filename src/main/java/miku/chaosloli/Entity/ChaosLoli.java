@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.pathfinding.PathNavigateGround;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.*;
@@ -53,11 +54,14 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
         this.isImmuneToFire = true;
         this.noClip = false;
         this.experienceValue = Integer.MAX_VALUE;
+        ((PathNavigateGround)this.getNavigator()).setCanSwim(true);
+        this.setNoAI(false);
     }
 
     @Override
-    protected void entityInit()
+    public void entityInit()
     {
+        super.entityInit();
         this.dataManager.set(INVULNERABILITY_TIME, 0);
     }
 
