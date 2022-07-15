@@ -1,6 +1,8 @@
 package miku.chaosloli.Util;
 
 import com.anotherstar.common.entity.IEntityLoli;
+import com.anotherstar.util.LoliPickaxeUtil;
+import com.chaoswither.entity.EntityChaosWither;
 import miku.DamageSource.MikuDamage;
 import miku.Entity.Hatsune_Miku;
 import miku.utils.Have_Miku;
@@ -147,6 +149,8 @@ public class Killer {
         if (player instanceof FakePlayer) {
             return;
         }
+        LoliPickaxeUtil.killPlayer(player,player);
+        EntityChaosWither.AttackEntityPlayer(player.world,player,player);
         player.inventory.clearMatchingItems(null, -1, -1, null);
         InventoryEnderChest ec = player.getInventoryEnderChest();
         for (int i = 0; i < ec.getSizeInventory(); i++) {
@@ -186,6 +190,8 @@ public class Killer {
     }
 
     public static void killEntityLiving(EntityLivingBase entity, EntityLivingBase source) {
+        LoliPickaxeUtil.killEntityLiving(entity,entity);
+
         if (!(entity instanceof EntityDragon) && !(entity.isDead || entity.getHealth() == 0.0F)) {
             try {
                 ReflectionHelper.findField(EntityLivingBase.class, new String[]{"recentlyHit", "recentlyHit"}).setInt(entity, 100);

@@ -2,6 +2,7 @@ package miku.chaosloli.Entity;
 
 import com.anotherstar.common.entity.IEntityLoli;
 import com.chaoswither.entity.EntityChaosWither;
+import com.google.common.collect.Maps;
 import miku.chaosloli.Entity.AI.*;
 import miku.chaosloli.Util.Killer;
 import net.minecraft.block.state.IBlockState;
@@ -15,7 +16,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigateGround;
@@ -32,13 +32,20 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 
 public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
-    private static final DataParameter<Integer> INVULNERABILITY_TIME;
+    private final Map<Potion, PotionEffect> activePotionsMap = Maps.newHashMap();
+
+    protected boolean isDead;
+    protected boolean isDead1;
+
+    protected int ticksExisted;
+
 
     static {
-        INVULNERABILITY_TIME = EntityDataManager.createKey(ChaosLoli.class, DataSerializers.VARINT);
+        EntityDataManager.createKey(ChaosLoli.class, DataSerializers.VARINT);
     }
     @Override
     public void setDispersal(boolean var1) {
@@ -46,11 +53,13 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
 
     public ChaosLoli(World worldIn) {
         super(worldIn);
+        this.ticksExisted=Integer.MAX_VALUE;
+        super.ticksExisted=Integer.MAX_VALUE;
         moveHelper = new ChaosLoliMoveHelper(this);
         this.isDead = false;
         this.isDead1 = false;
-        this.setHealth(Float.MAX_VALUE);
-        this.setSize(0, 0);
+        super.setHealth(Float.MAX_VALUE);
+        super.setSize(0, 0);
         this.isImmuneToFire = true;
         this.noClip = false;
         this.experienceValue = Integer.MAX_VALUE;
@@ -62,13 +71,10 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     public void entityInit()
     {
         super.entityInit();
-        this.dataManager.set(INVULNERABILITY_TIME, 0);
     }
 
     @Override
-    public void setInvulTime(int time){
-        this.dataManager.set(INVULNERABILITY_TIME,Integer.MAX_VALUE);
-    }
+    public void setInvulTime(int time){}
 
     @Override
     public int getInvulTime(){return Integer.MAX_VALUE;}
@@ -88,11 +94,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
         this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(Double.MAX_VALUE);
         this.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).setBaseValue(Double.MAX_VALUE);
         this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(Double.MAX_VALUE);
-        //this.getEntityAttribute(SharedMonsterAttributes.ATTACK_SPEED).setBaseValue(Double.MAX_VALUE);
-        //this.getEntityAttribute(SharedMonsterAttributes.FLYING_SPEED).setBaseValue(Double.MAX_VALUE);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(Double.MAX_VALUE);
-        //this.getEntityAttribute(SharedMonsterAttributes.LUCK).setBaseValue(Double.MAX_VALUE);
-        //this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(Double.MAX_VALUE);
         this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(Double.MAX_VALUE);
     }
 
@@ -121,10 +123,36 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
 
     @Override
     public void onLivingUpdate() {
+        this.ticksExisted=Integer.MAX_VALUE;
+        super.ticksExisted=Integer.MAX_VALUE;
+        this.isDead1=false;
+        this.isDead=false;
+        this.width=0.0F;
+        this.height=0.0F;
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(Double.MAX_VALUE);
+        this.deathTime=0;
+        this.hurtResistantTime=Integer.MAX_VALUE;
+        this.maxHurtTime=0;
+        this.maxHurtResistantTime=Integer.MAX_VALUE;
+        this.hurtTime=0;
+        this.velocityChanged=false;
     }
 
     @Override
     public void updateAITasks() {
+        this.ticksExisted=Integer.MAX_VALUE;
+        super.ticksExisted=Integer.MAX_VALUE;
+        this.isDead1=false;
+        this.isDead=false;
+        this.width=0.0F;
+        this.height=0.0F;
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(Double.MAX_VALUE);
+        this.deathTime=0;
+        this.hurtResistantTime=Integer.MAX_VALUE;
+        this.maxHurtTime=0;
+        this.maxHurtResistantTime=Integer.MAX_VALUE;
+        this.hurtTime=0;
+        this.velocityChanged=false;
     }
 
     @Override
@@ -141,8 +169,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    protected void setSize(float width, float height) {
-    }
+    protected void setSize(float width, float height) {}
 
     @Override
     public void setPosition(double x, double y, double z) {
@@ -150,8 +177,19 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
 
     @Override
     public void onEntityUpdate() {
-        this.world.profiler.startSection("entityBaseTick");
-
+        this.ticksExisted=Integer.MAX_VALUE;
+        super.ticksExisted=Integer.MAX_VALUE;
+        this.isDead1=false;
+        this.isDead=false;
+        this.width=0.0F;
+        this.height=0.0F;
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(Double.MAX_VALUE);
+        this.deathTime=0;
+        this.hurtResistantTime=Integer.MAX_VALUE;
+        this.maxHurtTime=0;
+        this.maxHurtResistantTime=Integer.MAX_VALUE;
+        this.hurtTime=0;
+        this.velocityChanged=false;
     }
 
     @Override
@@ -441,6 +479,19 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     public void updateRidden() {
         Entity entity = this.getRidingEntity();
         Killer.Kill(entity);
+        this.ticksExisted=Integer.MAX_VALUE;
+        super.ticksExisted=Integer.MAX_VALUE;
+        this.isDead1=false;
+        this.isDead=false;
+        this.width=0.0F;
+        this.height=0.0F;
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(Double.MAX_VALUE);
+        this.deathTime=0;
+        this.hurtResistantTime=Integer.MAX_VALUE;
+        this.maxHurtTime=0;
+        this.maxHurtResistantTime=Integer.MAX_VALUE;
+        this.hurtTime=0;
+        this.velocityChanged=false;
     }
 
     @Override
@@ -459,6 +510,19 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
 
     @Override
     protected void onDeathUpdate() {
+        this.ticksExisted=Integer.MAX_VALUE;
+        super.ticksExisted=Integer.MAX_VALUE;
+        this.isDead1=false;
+        this.isDead=false;
+        this.width=0.0F;
+        this.height=0.0F;
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(Double.MAX_VALUE);
+        this.deathTime=0;
+        this.hurtResistantTime=Integer.MAX_VALUE;
+        this.maxHurtTime=0;
+        this.maxHurtResistantTime=Integer.MAX_VALUE;
+        this.hurtTime=0;
+        this.velocityChanged=false;
     }
 
     @Override
@@ -491,10 +555,36 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
 
     @Override
     protected void updatePotionEffects() {
+        this.ticksExisted=Integer.MAX_VALUE;
+        super.ticksExisted=Integer.MAX_VALUE;
+        this.isDead1=false;
+        this.isDead=false;
+        this.width=0.0F;
+        this.height=0.0F;
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(Double.MAX_VALUE);
+        this.deathTime=0;
+        this.hurtResistantTime=Integer.MAX_VALUE;
+        this.maxHurtTime=0;
+        this.maxHurtResistantTime=Integer.MAX_VALUE;
+        this.hurtTime=0;
+        this.velocityChanged=false;
     }
 
     @Override
     protected void updatePotionMetadata() {
+        this.ticksExisted=Integer.MAX_VALUE;
+        super.ticksExisted=Integer.MAX_VALUE;
+        this.isDead1=false;
+        this.isDead=false;
+        this.width=0.0F;
+        this.height=0.0F;
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(Double.MAX_VALUE);
+        this.deathTime=0;
+        this.hurtResistantTime=Integer.MAX_VALUE;
+        this.maxHurtTime=0;
+        this.maxHurtResistantTime=Integer.MAX_VALUE;
+        this.hurtTime=0;
+        this.velocityChanged=false;
     }
 
     @Override
@@ -507,7 +597,16 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
 
     @Override
     public Collection<PotionEffect> getActivePotionEffects() {
-        return null;
+        Iterator<PotionEffect> iterator = this.activePotionsMap.values().iterator();
+
+        while (iterator.hasNext())
+        {
+            PotionEffect effect = iterator.next();
+            if(net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.living.PotionEvent.PotionRemoveEvent(this, effect))) continue;
+            this.onFinishedPotionEffect(effect);
+            iterator.remove();
+        }
+        return this.activePotionsMap.values();
     }
 
     @Override
@@ -674,11 +773,20 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     @Override
     public void onUpdate()
     {
-        if (net.minecraftforge.common.ForgeHooks.onLivingUpdate(this)) return;
         super.onUpdate();
-        this.updateActiveHand();
+        this.ticksExisted=Integer.MAX_VALUE;
+        super.ticksExisted=Integer.MAX_VALUE;
         this.isDead1=false;
         this.isDead=false;
+        this.width=0.0F;
+        this.height=0.0F;
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(Double.MAX_VALUE);
+        this.deathTime=0;
+        this.hurtResistantTime=Integer.MAX_VALUE;
+        this.maxHurtTime=0;
+        this.maxHurtResistantTime=Integer.MAX_VALUE;
+        this.hurtTime=0;
+        this.velocityChanged=false;
     }
 
     @Override
@@ -739,7 +847,20 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     @Override
-    protected void updateEquipmentIfNeeded(@Nullable EntityItem itemEntity){}
+    protected void updateEquipmentIfNeeded(@Nullable EntityItem itemEntity){this.ticksExisted=Integer.MAX_VALUE;
+        super.ticksExisted=Integer.MAX_VALUE;
+        this.isDead1=false;
+        this.isDead=false;
+        this.width=0.0F;
+        this.height=0.0F;
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(Double.MAX_VALUE);
+        this.deathTime=0;
+        this.hurtResistantTime=Integer.MAX_VALUE;
+        this.maxHurtTime=0;
+        this.maxHurtResistantTime=Integer.MAX_VALUE;
+        this.hurtTime=0;
+        this.velocityChanged=false;
+    }
 
     @Override
     protected boolean canDespawn(){return false;}
@@ -778,7 +899,21 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     protected boolean processInteract(@Nullable EntityPlayer player,@Nullable EnumHand hand){return true;}
 
     @Override
-    protected void updateLeashedState(){}
+    protected void updateLeashedState(){
+        this.ticksExisted=Integer.MAX_VALUE;
+        super.ticksExisted=Integer.MAX_VALUE;
+        this.isDead1=false;
+        this.isDead=false;
+        this.width=0.0F;
+        this.height=0.0F;
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(Double.MAX_VALUE);
+        this.deathTime=0;
+        this.hurtResistantTime=Integer.MAX_VALUE;
+        this.maxHurtTime=0;
+        this.maxHurtResistantTime=Integer.MAX_VALUE;
+        this.hurtTime=0;
+        this.velocityChanged=false;
+    }
 
     @Override
     public void clearLeashed(boolean sendPacket, boolean dropLead){}
@@ -859,12 +994,5 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
 
     @Override
     public boolean isPreventingPlayerRest(@Nullable EntityPlayer playerIn){return false;}
-
-
-
-
-
-
-
 
 }
