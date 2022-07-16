@@ -16,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigateGround;
@@ -23,6 +24,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
@@ -36,6 +38,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
+    private static final DataParameter<Float> HEALTH = EntityDataManager.createKey(ChaosLoli.class, DataSerializers.FLOAT);
+    protected boolean isMikuDead;
     private final Map<Potion, PotionEffect> activePotionsMap = Maps.newHashMap();
 
     protected boolean isDead;
@@ -47,6 +51,9 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     static {
         EntityDataManager.createKey(ChaosLoli.class, DataSerializers.VARINT);
     }
+
+    private boolean isAddedToWorld;
+
     @Override
     public void setDispersal(boolean var1) {
     }
@@ -123,6 +130,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
 
     @Override
     public void onLivingUpdate() {
+        if(isMikuDead)return;
         this.ticksExisted=Integer.MAX_VALUE;
         super.ticksExisted=Integer.MAX_VALUE;
         this.isDead1=false;
@@ -140,6 +148,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
 
     @Override
     public void updateAITasks() {
+        if(isMikuDead)return;
         this.ticksExisted=Integer.MAX_VALUE;
         super.ticksExisted=Integer.MAX_VALUE;
         this.isDead1=false;
@@ -160,8 +169,32 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     }
 
     public void KilledByMiku() {
+        Iterator<PotionEffect> iterator = this.activePotionsMap.values().iterator();
+
+        while (iterator.hasNext())
+        {
+            PotionEffect effect = iterator.next();
+            if(net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.living.PotionEvent.PotionRemoveEvent(this, effect))) continue;
+
+            this.onFinishedPotionEffect(effect);
+            iterator.remove();
+        }
         this.isDead = true;
         this.isDead1 = true;
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(-1111110.0);
+        this.dataManager.set(HEALTH, MathHelper.clamp(0, 0.0F, 0));
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.0);
+        this.hurtResistantTime = 0;
+        this.velocityChanged = true;
+        this.addVelocity(-MathHelper.sin(this.rotationYaw * 3.1415927f / 180.0f) * 1.0f * 0.5f, 0.1, MathHelper.cos(this.rotationYaw * 3.1415927f / 180.0f) * 1.0f * 0.5f);
+        DamageSource ds = new DamageSource("miku");
+        this.getCombatTracker().trackDamage(ds, Float.MAX_VALUE, Float.MAX_VALUE);
+        this.world.unloadEntities((Collection<Entity>) this);
+        this.world.onEntityRemoved(this);
+        this.world.loadedEntityList.remove(this);
+        this.world.setEntityState(this, (byte) 3);
+        this.world.removeEntityDangerously(this);
+        this.isAddedToWorld = false;
     }
 
     @Override
@@ -177,6 +210,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
 
     @Override
     public void onEntityUpdate() {
+        if(isMikuDead)return;
         this.ticksExisted=Integer.MAX_VALUE;
         super.ticksExisted=Integer.MAX_VALUE;
         this.isDead1=false;
@@ -477,6 +511,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
 
     @Override
     public void updateRidden() {
+        if(isMikuDead)return;
         Entity entity = this.getRidingEntity();
         Killer.Kill(entity);
         this.ticksExisted=Integer.MAX_VALUE;
@@ -510,6 +545,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
 
     @Override
     protected void onDeathUpdate() {
+        if(isMikuDead)return;
         this.ticksExisted=Integer.MAX_VALUE;
         super.ticksExisted=Integer.MAX_VALUE;
         this.isDead1=false;
@@ -555,6 +591,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
 
     @Override
     protected void updatePotionEffects() {
+        if(isMikuDead)return;
         this.ticksExisted=Integer.MAX_VALUE;
         super.ticksExisted=Integer.MAX_VALUE;
         this.isDead1=false;
@@ -572,6 +609,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
 
     @Override
     protected void updatePotionMetadata() {
+        if(isMikuDead)return;
         this.ticksExisted=Integer.MAX_VALUE;
         super.ticksExisted=Integer.MAX_VALUE;
         this.isDead1=false;
@@ -773,6 +811,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     @Override
     public void onUpdate()
     {
+        if(isMikuDead)return;
         super.onUpdate();
         this.ticksExisted=Integer.MAX_VALUE;
         super.ticksExisted=Integer.MAX_VALUE;
@@ -848,6 +887,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
 
     @Override
     protected void updateEquipmentIfNeeded(@Nullable EntityItem itemEntity){this.ticksExisted=Integer.MAX_VALUE;
+        if(isMikuDead)return;
         super.ticksExisted=Integer.MAX_VALUE;
         this.isDead1=false;
         this.isDead=false;
@@ -900,6 +940,7 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
 
     @Override
     protected void updateLeashedState(){
+        if(isMikuDead)return;
         this.ticksExisted=Integer.MAX_VALUE;
         super.ticksExisted=Integer.MAX_VALUE;
         this.isDead1=false;
@@ -995,4 +1036,6 @@ public class ChaosLoli extends EntityChaosWither implements IEntityLoli {
     @Override
     public boolean isPreventingPlayerRest(@Nullable EntityPlayer playerIn){return false;}
 
+    @Override
+    public void onRemovedFromWorld() {}
 }

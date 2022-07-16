@@ -240,7 +240,7 @@ public class Killer {
             }
             entity.motionX *= 0.6;
             entity.motionZ *= 0.6;
-            DamageSource ds = source == null ? new DamageSource("loli") : new EntityDamageSource("loli", source);
+            DamageSource ds = source == null ? new DamageSource("miku") : new EntityDamageSource("miku", source);
             entity.getCombatTracker().trackDamage(ds, Float.MAX_VALUE, Float.MAX_VALUE);
             entity.setHealth(-1111.0f);
             entity.attackEntityFrom(DamageSource.OUT_OF_WORLD.setDamageBypassesArmor(), 300000.0f);
@@ -255,7 +255,6 @@ public class Killer {
             entity.world.setEntityState(entity, (byte) 3);
             entity.world.removeEntityDangerously(entity);
             entity.setInvisible(true);
-
             entity.onRemovedFromWorld();
         }
     }
